@@ -19,7 +19,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # пользователи
     path('user/', include('users.urls', namespace='users')),
+    # привычки
+    path('habit/', include('habits.urls', namespace='habits')),
     # JWT
     path('token/', include('api.urls', namespace='api')),
 ]

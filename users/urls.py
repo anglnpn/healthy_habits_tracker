@@ -5,7 +5,6 @@ from users.apps import UsersConfig
 from users.views import UserCreateAPIView, UserListAPIView, UserRetrieveAPIView, \
     UserUpdateAPIView, UserDestroyAPIView
 
-
 app_name = UsersConfig.name
 
 

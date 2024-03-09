@@ -25,6 +25,10 @@ celery = "^5.3.6"
 flake8 = "^7.0.0"
 django-celery-beat = "^2.5.0"
 load-dotenv = "^0.1.0"
+aiogram = "2.14.3"
+async = "^0.6.2"
+executor = "^23.2"
+asyncio = "^3.4.3"
 
 
 [build-system]

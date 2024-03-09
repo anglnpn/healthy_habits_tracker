@@ -2,7 +2,8 @@ from rest_framework import generics
 from users.models import User
 from users.permissions import IsUser
 from users.serializers import UserSerializer, LimitedUserSerializer
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.hashers import make_password
@@ -61,3 +62,7 @@ class UserDestroyAPIView(generics.DestroyAPIView):
     """
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsUser]
+
+
+
+
