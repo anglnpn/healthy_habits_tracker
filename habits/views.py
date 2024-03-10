@@ -3,6 +3,7 @@ from datetime import datetime
 from django.shortcuts import render
 from rest_framework import generics
 
+from config.settings import TELEGRAM_BOT_API_TOKEN
 from habits.models import Habit
 from habits.paginators import HabitsPagination
 from rest_framework.permissions import IsAuthenticated
@@ -10,8 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from habits.permissions import IsAuthorHabit, IsModer
 from habits.serializers import HabitSerializer, HabitPublicUsefulListSerializer, HabitPublicPleasantListSerializer
 from habits.services import calculate_next_notification_time
+
+import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -107,23 +111,41 @@ class HabitUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAuthorHabit | IsModer]
 
 
-class HabitAddTelegramID(APIView):
-    """
-    Контроллер для заполнения/изменения
-    поля для id чата телеграмма моделей привычек пользователя
-    """
-    serializer_class = HabitSerializer
-    queryset = Habit.objects.all()
-    permission_classes = [IsAuthenticated, IsAuthorHabit | IsModer]
+class GetChatId(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        # Получаем ID текущего аутентифицированного пользователя
+    def get(self, request):
+        global telegram_user_id
+        bot_token = TELEGRAM_BOT_API_TOKEN
+        url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
+
         user_id = request.user.id
-        telegram_id = request.data.get('telegram_chat_id')
 
-        habits = Habit.objects.filter(user=user_id).all()
-        for habit in habits:
-            habit.telegram_chat_id = telegram_id
-            habit.save()
+        print(user_id)
 
-        return Response({'Успешно'})
+        try:
+            response = requests.get(url)
+            response_data = response.json()
+            results_data = response_data['result']
+
+            for result in results_data:
+                if result.get('message'):
+                    telegram_user_id = result['message']['chat']['id']
+
+                    print(telegram_user_id)
+                elif result.get('my_chat_member'):
+                    telegram_user_id = result['my_chat_member']['chat']['id']
+
+                    print(telegram_user_id)
+
+            habits = Habit.objects.filter(user=user_id).all()
+            for habit in habits:
+                habit.telegram_chat_id = telegram_user_id
+                print(habit.telegram_chat_id)
+                habit.save()
+
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+

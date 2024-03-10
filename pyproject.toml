@@ -29,6 +29,8 @@ aiogram = "2.14.3"
 async = "^0.6.2"
 executor = "^23.2"
 asyncio = "^3.4.3"
+telegram = "^0.0.1"
+python-telegram-bot = "^21.0.1"
 
 
 [build-system]

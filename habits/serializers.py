@@ -12,9 +12,7 @@ class HabitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Habit
-        fields = ['location', 'time', 'activity', 'periodicity', 'pleasant_habit',
-                  'award', 'related_habit', 'execution_time', 'telegram_chat_id',
-                  'notification_time']
+        fields = '__all__'
         validators = [HabitCustomValidator('pleasant_habit', 'periodicity', 'execution_time', 'activity',
                                            'award', 'related_habit'),
                       ExecutionTimeCustomValidator('execution_time'),

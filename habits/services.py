@@ -13,3 +13,5 @@ def calculate_next_notification_time(time, periodicity, notification_time):
     print(next_notification_datetime)
     # Возвращаем следующую дату и время оповещения
     return next_notification_datetime
+
+

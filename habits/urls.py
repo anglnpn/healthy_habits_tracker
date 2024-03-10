@@ -1,7 +1,7 @@
 from django.urls import path
 from habits.apps import HabitsConfig
 from habits.views import HabitCreateAPIView, HabitListAPIView, HabitRetrieveAPIView, HabitUpdateAPIView, \
-    HabitDeleteAPIView, HabitUsefulListAPIView, HabitPleasantListAPIView, HabitAddTelegramID
+    HabitDeleteAPIView, HabitUsefulListAPIView, HabitPleasantListAPIView, GetChatId
 
 app_name = HabitsConfig.name
 
@@ -13,6 +13,6 @@ urlpatterns = [
     path('habit/<int:pk>/', HabitRetrieveAPIView.as_view(), name='habit_get'),
     path('update/<int:pk>/', HabitUpdateAPIView.as_view(), name='habit_update'),
     path('delete/<int:pk>/', HabitDeleteAPIView.as_view(), name='habit_delete'),
-    path('add_telegram_id/', HabitAddTelegramID.as_view(), name='habit_add_telegram_id'),
+    path('get_chat_id/', GetChatId.as_view(), name='get_chat_id'),
 
 ]
