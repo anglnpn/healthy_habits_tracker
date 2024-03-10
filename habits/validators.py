@@ -28,7 +28,7 @@ class HabitCustomValidator:
         related_habit = dict(value).get(self.related_habit)
 
         if pleasant_habit is True:
-            if periodicity is not None and execution_time is not None or activity is not None:
+            if periodicity is not None and execution_time is not None:
                 raise serializers.ValidationError(
                     'Более чем одно поле из списка обязательных полей "периодичность, '
                     'время выполнения, действие" были заполнены')
