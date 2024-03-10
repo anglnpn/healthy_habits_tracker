@@ -6,7 +6,7 @@ from rest_framework import generics
 from config.settings import TELEGRAM_BOT_API_TOKEN
 from habits.models import Habit
 from habits.paginators import HabitsPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from habits.permissions import IsAuthorHabit, IsModer
 from habits.serializers import HabitSerializer, HabitPublicUsefulListSerializer, HabitPublicPleasantListSerializer
@@ -90,7 +90,8 @@ class HabitRetrieveAPIView(generics.RetrieveAPIView):
     """
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
-    permission_classes = [IsAuthenticated, IsAuthorHabit | IsModer]
+    permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated, IsAuthorHabit | IsModer]
 
 
 class HabitDeleteAPIView(generics.DestroyAPIView):
@@ -112,6 +113,10 @@ class HabitUpdateAPIView(generics.UpdateAPIView):
 
 
 class GetChatId(APIView):
+    """
+    Контроллер для упрощенного получения chat_id
+    и записи в привычки
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

@@ -8,7 +8,8 @@ def send_message(chat_id, text):
 
     try:
         response = requests.post(url, params=params)
-        response.raise_for_status()  # Проверяем статус ответа
+        # Проверяем статус ответа
+        response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
         print(f"Request error: {e}")

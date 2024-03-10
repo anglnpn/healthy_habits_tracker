@@ -173,8 +173,8 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8006'
-]
+    os.getenv('CORS_ALLOWED_ORIGINS')
+    ]
 
 CORS_ALLOW_ALL_ORIGINS = False
 
