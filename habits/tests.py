@@ -162,7 +162,7 @@ class HabitTestCase(APITestCase):
             status.HTTP_200_OK
         )
 
-    def test_update_lesson(self):
+    def test_update_habit(self):
         """
         Тестирование изменения списка уроков
         """
@@ -210,7 +210,7 @@ class HabitTestCase(APITestCase):
             status.HTTP_201_CREATED
         )
 
-    def test_delete_lesson(self):
+    def test_delete_habit(self):
         """
         Тестирование удаление привычки
         """
