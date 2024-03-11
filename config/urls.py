@@ -25,7 +25,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="API Documentation",
         default_version='v1',
-        description="Your API description",
+        description="Documentation for the 'Habit Tracker' project",
         terms_of_service="https://www.example.com/policies/terms/",
         contact=openapi.Contact(email="contact@example.com"),
         license=openapi.License(name="BSD License"),
@@ -44,6 +44,6 @@ urlpatterns = [
     # JWT
     path('token/', include('api.urls', namespace='api')),
     # документация API
-        path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-        path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     ]

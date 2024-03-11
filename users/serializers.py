@@ -9,7 +9,15 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ['password', 'name', 'surname', 'age', 'email', 'phone', 'avatar', 'city']
+        fields = [
+            'password',
+            'name',
+            'surname',
+            'age',
+            'email',
+            'phone',
+            'avatar',
+            'city']
 
 
 class LimitedUserSerializer(serializers.ModelSerializer):
@@ -19,7 +27,8 @@ class LimitedUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name', 'age', 'avatar', 'city']
-
-
-
+        fields = [
+            'name',
+            'age',
+            'avatar',
+            'city']

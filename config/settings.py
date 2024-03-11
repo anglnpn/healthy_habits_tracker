@@ -200,8 +200,8 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
-        'task': 'habits.tasks.send_telegram_message',  # Путь к задаче
-        'schedule': timedelta(minutes=1),  # Расписание выполнения задачи (например, каждые 10 минут)
+        'task': 'habits.tasks.send_telegram_message',
+        'schedule': timedelta(minutes=1),
     },
 }
 

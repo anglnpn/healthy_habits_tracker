@@ -10,4 +10,3 @@ class IsUser(BasePermission):
             return True
         else:
             return False
-
