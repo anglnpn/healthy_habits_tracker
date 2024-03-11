@@ -1,11 +1,11 @@
 from rest_framework import generics
-from users.models import User
-from users.permissions import IsUser
-from users.serializers import UserSerializer, LimitedUserSerializer
-
 from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.hashers import make_password
+
+from users.models import User
+from users.permissions import IsUser
+from users.serializers import UserSerializer, LimitedUserSerializer
 
 
 class UserCreateAPIView(generics.CreateAPIView):

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'users',
     'api',
+    'habits',
 ]
 
 MIDDLEWARE = [
@@ -172,8 +173,8 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8005'
-]
+    os.getenv('CORS_ALLOWED_ORIGINS')
+    ]
 
 CORS_ALLOW_ALL_ORIGINS = False
 
@@ -196,10 +197,14 @@ CELERY_TASK_TRACK_STARTED = os.getenv('CELERY_TASK_TRACK_STARTED')
 # Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-# # Настройки для Celery
-# CELERY_BEAT_SCHEDULE = {
-#     'task-name': {
-#         'task': 'users.tasks.checking_users',  # Путь к задаче
-#         'schedule': timedelta(days=1),  # Расписание выполнения задачи (например, каждые 10 минут)
-#     },
-# }
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'habits.tasks.send_telegram_message',
+        'schedule': timedelta(minutes=1),
+    },
+}
+
+TELEGRAM_BOT_API_TOKEN = os.getenv('TELEGRAM_BOT_API_TOKEN')
+
+

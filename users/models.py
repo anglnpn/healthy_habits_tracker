@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -16,7 +15,9 @@ class User(AbstractUser):
     age = models.IntegerField(verbose_name='возраст', **NULLABLE)
     email = models.EmailField(unique=True, verbose_name='почта')
     phone = models.CharField(max_length=35, verbose_name='телефон', **NULLABLE)
-    avatar = models.ImageField(upload_to='media/', verbose_name='аватар', **NULLABLE)
+    avatar = models.ImageField(upload_to='media/',
+                               verbose_name='аватар',
+                               **NULLABLE)
     city = models.CharField(max_length=50, verbose_name='город', **NULLABLE)
 
     USERNAME_FIELD = 'email'
