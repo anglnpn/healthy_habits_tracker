@@ -1,15 +1,13 @@
 from datetime import datetime, timedelta
-
-from django.test import TestCase
 import unittest
+
+from rest_framework.test import APITestCase
+from rest_framework import status
+
 from freezegun import freeze_time
 
 from habits.services import calculate_next_notification_time
 from habits.tasks import send_telegram_message
-
-from rest_framework.test import APITestCase, force_authenticate
-from rest_framework import status
-
 from habits.models import Habit
 from users.models import User
 
@@ -17,13 +15,35 @@ from users.models import User
 class HabitTestCase(APITestCase):
 
     def setUp(self) -> None:
-        self.user = User.objects.create(name='Test', surname='Test', email='test@t.com', is_superuser=True)
-        # self.pleasant_habit = Habit.objects.create(user=self.user, location='проверка локации', time='00:00:00',
-        #                                            periodicity=1,
-        #                                            pleasant_habit=True, publicity=False, telegram_chat_id=704348791)
-        self.pleasant_habit = Habit.objects.create(user=self.user, location='проверка локации', time='00:00:00',
-                                                   activity='поесть', pleasant_habit=True, publicity=False,
-                                                   telegram_chat_id=704348791)
+        self.user = User.objects.create(
+            name='Test',
+            surname='Test',
+            email='test@t.com',
+            is_superuser=True)
+
+        self.user_2 = User.objects.create(
+            name='Test2',
+            surname='Test2',
+            email='test2@t.com',
+            is_superuser=False)
+
+        self.pleasant_habit = Habit.objects.create(
+            user=self.user,
+            location='проверка локации',
+            time='00:00:00',
+            activity='поесть',
+            pleasant_habit=True,
+            publicity=False,
+            telegram_chat_id=704348791)
+
+        self.public_habit = Habit.objects.create(
+            user=self.user,
+            location='проверка локации',
+            time='00:00:00',
+            activity='поесть',
+            pleasant_habit=True,
+            publicity=True,
+            telegram_chat_id=704348791)
 
     def test_create_useful_habit(self):
         """
@@ -40,7 +60,6 @@ class HabitTestCase(APITestCase):
             'award': 'проверка вознаграждения',
             'execution_time': '00:02:00',
             'publicity': False,
-            # 'notification_time':
             'telegram_chat_id': 704348791
         }
 
@@ -48,7 +67,6 @@ class HabitTestCase(APITestCase):
             '/habit/create/',
             data=data
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -74,7 +92,6 @@ class HabitTestCase(APITestCase):
             '/habit/create/',
             data=data
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -89,9 +106,8 @@ class HabitTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(
-            f'/habit/list/'
+            '/habit/list/'
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -106,9 +122,8 @@ class HabitTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(
-            f'/habit/list_useful/'
+            '/habit/list_useful/'
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -123,9 +138,8 @@ class HabitTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(
-            f'/habit/list_pleasant/'
+            '/habit/list_pleasant/'
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
@@ -169,11 +183,31 @@ class HabitTestCase(APITestCase):
             f'/habit/update/{self.pleasant_habit.id}/',
             data=data
         )
-        print(response.json())
 
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
+        )
+
+    def test_add_public_habit(self):
+        """
+        Тестирование добавление публичной привычки
+        пользователю
+        """
+        self.client.force_authenticate(user=self.user_2)
+
+        data = {
+            'habit_id': self.public_habit.id,
+        }
+
+        response = self.client.post(
+            '/habit/add_habit/',
+            data=data
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
         )
 
     def test_delete_lesson(self):
@@ -233,6 +267,7 @@ class TestCalculateNextTime(unittest.TestCase):
         expected_result = datetime.combine(exp_notification_date, time)
 
         # вызываем функцию
-        next_notification_time = calculate_next_notification_time(time, periodicity, notification_time)
+        next_notification_time = calculate_next_notification_time(
+            time, periodicity, notification_time)
 
         self.assertEqual(next_notification_time, expected_result)

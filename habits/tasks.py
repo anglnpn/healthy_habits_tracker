@@ -39,7 +39,8 @@ def send_telegram_message():
                                f"{activity} в {time} в {location}" \
                                f"Время выполнения привычки: {execution_time}" \
                                f"Ваше вознаграждение приятная привычка!" \
-                               f"{related_habit.activity} в {related_habit.time} " \
+                               f"{related_habit.activity} " \
+                               f"в {related_habit.time} " \
                                f"в {related_habit.location}"
 
             else:
@@ -66,7 +67,7 @@ def send_telegram_message():
 
                 logging.info(f"Сообщение отправлено - {chat_id}")
             except Exception as e:
-                logging.warning(f"Ошибка при отправке")
+                logging.warning(f"Ошибка при отправке {e}")
 
     else:
         logging.info("Привычек для оповещения нет")
