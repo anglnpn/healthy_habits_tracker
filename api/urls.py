@@ -5,11 +5,13 @@ from rest_framework_simplejwt.views import (
 )
 
 from api.apps import ApiConfig
+from api.views import MyObtainTokenPairView
 
 app_name = ApiConfig.name
 
 
 urlpatterns = [
-    path('', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('', MyObtainTokenPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
