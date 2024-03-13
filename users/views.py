@@ -75,19 +75,24 @@ class GetChatId(APIView):
     Контроллер для упрощенного получения chat_id
     и записи в привычки
     """
+    # serializer_class = UserSerializer
+    queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         global telegram_user_id
         bot_token = TELEGRAM_BOT_API_TOKEN
+        print(bot_token)
         url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
 
         user_id = request.user.id
+        print(user_id)
 
         try:
             response = requests.get(url)
             response_data = response.json()
             results_data = response_data['result']
+            print(results_data)
 
             for result in results_data:
                 if result.get('message'):
@@ -99,10 +104,11 @@ class GetChatId(APIView):
 
                     print(telegram_user_id)
 
-            user = User.objects.filter(id=user_id)
+            user = User.objects.get(id=user_id)
             user.telegram_chat_id = telegram_user_id
             user.save()
+            print(user)
 
-            return Response(status=status.HTTP_200_OK)
+            return Response(f'id получен {telegram_user_id} и записан пользователю {user.id}', status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)

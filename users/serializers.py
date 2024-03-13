@@ -9,14 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = [
-            'name',
-            'surname',
-            'age',
-            'email',
-            'phone',
-            'avatar',
-            'city']
+        fields = '__all__'
 
 
 class LimitedUserSerializer(serializers.ModelSerializer):
