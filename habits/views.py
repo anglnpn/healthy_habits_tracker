@@ -1,5 +1,4 @@
 from datetime import datetime
-import requests
 
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -7,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from config.settings import TELEGRAM_BOT_API_TOKEN
 from habits.models import Habit
 from habits.paginators import HabitsPagination
 from habits.permissions import IsAuthorHabit, IsModer
@@ -163,43 +161,4 @@ class AddHabitToUserAPIView(generics.CreateAPIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class GetChatId(APIView):
-    """
-    Контроллер для упрощенного получения chat_id
-    и записи в привычки
-    """
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        global telegram_user_id
-        bot_token = TELEGRAM_BOT_API_TOKEN
-        url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
-
-        user_id = request.user.id
-
-        print(user_id)
-
-        try:
-            response = requests.get(url)
-            response_data = response.json()
-            results_data = response_data['result']
-
-            for result in results_data:
-                if result.get('message'):
-                    telegram_user_id = result['message']['chat']['id']
-
-                    print(telegram_user_id)
-                elif result.get('my_chat_member'):
-                    telegram_user_id = result['my_chat_member']['chat']['id']
-
-                    print(telegram_user_id)
-
-            habits = Habit.objects.filter(user=user_id).all()
-            for habit in habits:
-                habit.telegram_chat_id = telegram_user_id
-                print(habit.telegram_chat_id)
-                habit.save()
-
-            return Response(status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response(e, status=status.HTTP_400_BAD_REQUEST)

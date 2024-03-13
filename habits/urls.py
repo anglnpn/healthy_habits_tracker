@@ -8,7 +8,6 @@ from habits.views import (HabitCreateAPIView,
                           HabitDeleteAPIView,
                           HabitUsefulListAPIView,
                           HabitPleasantListAPIView,
-                          GetChatId,
                           AddHabitToUserAPIView)
 
 
@@ -22,7 +21,6 @@ urlpatterns = [
     path('<int:pk>/', HabitRetrieveAPIView.as_view(), name='habit_get'),
     path('update/<int:pk>/', HabitUpdateAPIView.as_view(), name='habit_update'),
     path('delete/<int:pk>/', HabitDeleteAPIView.as_view(), name='habit_delete'),
-    path('get_chat_id/', GetChatId.as_view(), name='get_chat_id'),
     path('add_habit/', AddHabitToUserAPIView.as_view(), name='add_habit'),
 
 ]
