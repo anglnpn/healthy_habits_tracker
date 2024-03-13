@@ -19,12 +19,12 @@ class HabitCustomValidator:
 
     def __call__(self, value):
 
-        pleasant_habit = dict(value).get(self.pleasant_habit)
-        periodicity = dict(value).get(self.periodicity)
-        execution_time = dict(value).get(self.execution_time)
-        activity = dict(value).get(self.activity)
-        award = dict(value).get(self.award)
-        related_habit = dict(value).get(self.related_habit)
+        pleasant_habit = value.get(self.pleasant_habit)
+        periodicity = value.get(self.periodicity)
+        execution_time = value.get(self.execution_time)
+        activity = value.get(self.activity)
+        award = value.get(self.award)
+        related_habit = value.get(self.related_habit)
 
         if pleasant_habit is True:
             # проверка создания приятной привычки
@@ -92,7 +92,7 @@ class ExecutionTimeCustomValidator:
         self.execution_time = execution_time
 
     def __call__(self, value):
-        ex_time = dict(value).get(self.execution_time)
+        ex_time = value.get(self.execution_time)
         if ex_time:
             total_seconds = ((ex_time.hour * 60 + ex_time.minute) * 60
                              + ex_time.second)
@@ -112,7 +112,7 @@ class PeriodicityCustomValidator:
         self.periodicity = periodicity
 
     def __call__(self, value):
-        periodicity = dict(value).get(self.periodicity)
+        periodicity = value.get(self.periodicity)
 
         if periodicity:
             if periodicity > 7:
@@ -132,7 +132,7 @@ class RelatedHabitCustomValidator:
         self.related_habit = related_habit
 
     def __call__(self, value):
-        related_habit = dict(value).get(self.related_habit)
+        related_habit = value.get(self.related_habit)
         if related_habit:
             habit_obj = Habit.objects.filter(
                 id=related_habit.id,
