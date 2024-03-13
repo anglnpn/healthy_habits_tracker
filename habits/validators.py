@@ -27,11 +27,16 @@ class HabitCustomValidator:
         related_habit = dict(value).get(self.related_habit)
 
         if pleasant_habit is True:
+            # проверка создания приятной привычки
             if periodicity is not None and execution_time is not None:
                 raise serializers.ValidationError(
                     'Более чем одно поле из списка '
                     'обязательных полей "периодичность, '
                     'время выполнения, действие" были заполнены')
+            elif related_habit is not None:
+                raise serializers.ValidationError(
+                    'У приятной привычки не может быть'
+                    'связанной привычки!')
             elif execution_time is not None:
                 raise serializers.ValidationError(
                     'Вы указали привычку приятной, '
@@ -51,6 +56,7 @@ class HabitCustomValidator:
             print("Приятная привычка была успешно добавлена")
 
         else:
+            # проверка создания полезной привычки
             if periodicity is None:
                 raise serializers.ValidationError(
                     "Вы указали привычку полезной, "
@@ -70,7 +76,8 @@ class HabitCustomValidator:
             elif award is not None and related_habit is not None:
                 raise serializers.ValidationError(
                     "У полезной привычки не может быть "
-                    "и вознаграждения и связанной привычки")
+                    "и вознаграждения и связанной привычки! "
+                    "Укажите что-то одно")
 
             print("Полезная привычка была успешно добавлена")
 
