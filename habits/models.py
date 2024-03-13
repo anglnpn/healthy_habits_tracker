@@ -17,7 +17,7 @@ class Habit(models.Model):
         max_length=1000,
         verbose_name='Действие',
         **NULLABLE)
-    periodicity = models.IntegerField(
+    periodicity = models.PositiveSmallIntegerField(
         default=1,
         verbose_name='Периодичность',
         **NULLABLE)
@@ -41,9 +41,6 @@ class Habit(models.Model):
         verbose_name='Признак публичности')
     notification_time = models.DateTimeField(
         verbose_name='Дата и время следующего оповещения',
-        **NULLABLE)
-    telegram_chat_id = models.IntegerField(
-        verbose_name='Telegram',
         **NULLABLE)
 
     class Meta:

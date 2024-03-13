@@ -19,6 +19,9 @@ class User(AbstractUser):
                                verbose_name='аватар',
                                **NULLABLE)
     city = models.CharField(max_length=50, verbose_name='город', **NULLABLE)
+    telegram_chat_id = models.IntegerField(
+        verbose_name='Telegram',
+        **NULLABLE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
