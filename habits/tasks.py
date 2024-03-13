@@ -27,7 +27,6 @@ def send_telegram_message():
         for habit in habits:
             # если привычки есть - собираем сообщение пользователю
             related_habit = habit.related_habit
-            chat_id = habit.telegram_chat_id
             activity = habit.activity
             time = habit.time
             location = habit.location
@@ -38,6 +37,7 @@ def send_telegram_message():
             user_id = habit.user
 
             user = User.objects.filter(id=user_id, telegram_chat_id__isnull=False)
+            chat_id = user.telegram_chat_id
 
             if user:
                 if related_habit:

@@ -109,6 +109,8 @@ class GetChatId(APIView):
             user.save()
             print(user)
 
-            return Response(f'id получен {telegram_user_id} и записан пользователю {user.id}', status=status.HTTP_200_OK)
+            return Response(f'id получен {telegram_user_id} '
+                            f'и записан пользователю {user.id}',
+                            status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
