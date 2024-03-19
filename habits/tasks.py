@@ -1,12 +1,11 @@
+import logging
 from datetime import datetime
+
 from celery import shared_task
+
 from habits.bot import send_message
 from habits.models import Habit
 from habits.services import calculate_next_notification_time
-
-import logging
-
-from users.models import User
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,66 +19,65 @@ def send_telegram_message():
     # получаем полезные привычки у которых время оповещения
     # соответствует времени в now
     # id телеграм чата должно быть заполнено
-    habits = Habit.objects.filter(notification_time=datetime.utcnow(),
-                                  pleasant_habit=False).all()
+
+    habits = Habit.objects.select_related('user').filter(
+        notification_time=datetime.utcnow(),
+        pleasant_habit=False,
+        user__telegram_chat_id__isnull=False,
+    ).all()
 
     if habits:
         for habit in habits:
             # если привычки есть - собираем сообщение пользователю
-            related_habit = habit.related_habit
-            activity = habit.activity
             time = habit.time
-            location = habit.location
-            award = habit.award
-            execution_time = habit.execution_time
             periodicity = habit.periodicity
             notification_time = habit.notification_time
-            user_id = habit.user
 
-            user = User.objects.filter(id=user_id, telegram_chat_id__isnull=False)
-            chat_id = user.telegram_chat_id
+            chat_id = habit.user.telegram_chat_id
 
-            if user:
-                if related_habit:
-                    # если есть связанная приятная привычка
-                    message_text = f"Вам нужно выполнить привычку: " \
-                                   f"{activity} в {time} в {location}" \
-                                   f"Время выполнения привычки: {execution_time}" \
-                                   f"Ваше вознаграждение приятная привычка!" \
-                                   f"{related_habit.activity} " \
-                                   f"в {related_habit.time} " \
-                                   f"в {related_habit.location}"
+            # собираем сообщение
+            message_text = _get_message_text(habit)
 
-                else:
-                    # если нет связанной приятной привычки, берем вознаграждение
-                    message_text = f"Вам нужно выполнить привычку: " \
-                                   f"{activity} в {time} в {location}" \
-                                   f"Время выполнения привычки: {execution_time}" \
-                                   f"Вознаграждение за выполнение: {award}" \
+            try:
+                # вызываем функцию отправки сообщения пользователю
+                send_message(chat_id, message_text)
 
-                # вызываем функцию подсчета времени следующего оповещения
-                next_notification_time = calculate_next_notification_time(
-                    time,
-                    periodicity,
-                    notification_time)
+                logging.info(f"Сообщение отправлено - {chat_id}")
+            except Exception as e:
+                logging.warning(f"Ошибка при отправке {e}")
 
-                # устанавливаем вычисленное время
-                habit.notification_time = next_notification_time
-                # сохраняем изменения
-                habit.save()
+            # вызываем функцию подсчета времени следующего оповещения
+            next_notification_time = calculate_next_notification_time(
+                time, periodicity, notification_time
+            )
 
-                try:
-                    # вызываем функцию отправки сообщения пользователю
-                    send_message(chat_id, message_text)
-
-                    logging.info(f"Сообщение отправлено - {chat_id}")
-                except Exception as e:
-                    logging.warning(f"Ошибка при отправке {e}")
-            else:
-                logging.info("У пользователя не заполнено поле 'telegram_chat_id'!"
-                             "Оповещение не создано")
+            # устанавливаем вычисленное время
+            habit.notification_time = next_notification_time
+            # сохраняем изменения
+            habit.save()
 
     else:
         logging.info("Привычек для оповещения нет")
 
     return 'Задача выполнена'
+
+
+def _get_message_text(habit: Habit) -> str:
+    if habit.related_habit:
+        # если есть связанная приятная привычка
+        message_text = f"Вам нужно выполнить привычку: " \
+                       f"{habit.activity} в {habit.time} в {habit.location}" \
+                       f"Время выполнения привычки: {habit.execution_time}" \
+                       f"Ваше вознаграждение приятная привычка!" \
+                       f"{habit.related_habit.activity} " \
+                       f"в {habit.related_habit.time} " \
+                       f"в {habit.related_habit.location}"
+
+    else:
+        # если нет связанной приятной привычки, берем вознаграждение
+        message_text = f"Вам нужно выполнить привычку: " \
+                       f"{habit.activity} в {habit.time} в {habit.location}" \
+                       f"Время выполнения привычки: {habit.execution_time}" \
+                       f"Вознаграждение за выполнение: {habit.award}"
+
+    return message_text
