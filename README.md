@@ -13,16 +13,24 @@
 
 Стек: Django, DRF, CORS, Celery, unittest, flake8, Docker, PostgreSQL, Telegram
 
-## Установка
 
-1. Убедитесь, что у вас установлен Python версии 3.11 и Poetry.
-2. Клонируйте репозиторий
-3. Установите зависимости с помощью Poetry:
-     poetry install
-4. Примените миграции:
-     poetry run python manage.py migrate
-5. Запустите сервер:
-     python manage.py runserver
+## Запуск проекта:
+
+1. Установите Docker и Docker Compose
+
+2. Создайте файл .env.docker в корневой директории проекта
+и определите в нем следующие переменные из .env.sample
+
+3. Запустите Docker Compose:
+```
+ docker-compose up -d --build
+
+```
+4. Проверьте работу:
+```
+http://localhost:8000
+```
+
 
 
 
